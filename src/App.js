@@ -26,12 +26,22 @@ class App extends React.Component {
     let value = target.value;
     const name = target.name;
 
-    if (target.type === 'checkbox') {
-      target.checked ?
-        this.state.filterSpecies.push(target.value) :
-        this.state.filterSpecies.pop(target.value);
-      value = this.state.filterSpecies;
-    }
+    if (target.name === 'filterSpecies') {
+      if(target.checked){
+        this.state.filterSpecies.push(target.value);
+        value = this.state.filterSpecies;
+      }else{
+        value = this.state.filterSpecies.filter(val => val !== target.value);
+      }
+    } else
+      if (target.name === 'filterGender') {
+        if(target.checked){
+          this.state.filterGender.push(target.value);
+          value = this.state.filterGender;
+        }else{
+          value = this.state.filterGender.filter(val => val !== target.value);
+        }
+      }
 
     this.setState({
       [name]: value
@@ -67,7 +77,9 @@ class App extends React.Component {
             items: result.results,
             filteredItems: result.results,
             species: result.results.map(item => item.species).filter((x, i, a) => a.indexOf(x) === i),
-            filterSpecies: result.results.map(item => item.species).filter((x, i, a) => a.indexOf(x) === i)
+            filterSpecies: result.results.map(item => item.species).filter((x, i, a) => a.indexOf(x) === i),
+            gender: result.results.map(item => item.gender).filter((x, i, a) => a.indexOf(x) === i),
+            filterGender: result.results.map(item => item.gender).filter((x, i, a) => a.indexOf(x) === i)
           });
         },
         (error) => {
@@ -80,7 +92,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { error, isLoaded, filteredItems, filterSpecies, species } = this.state;
+    const { error, isLoaded, filteredItems, filterSpecies, species, gender, filterGender } = this.state;
 
     if (error) {
       return <div>Error: {error.message}</div>;
@@ -92,13 +104,14 @@ class App extends React.Component {
           <div className="row">
             <div className="col-sm-3">
               <h3>Filters</h3>
-              <Filter species={species} filterSpecies={filterSpecies} onChange={this.updateFilter} />
+              <Filter species={species} filterSpecies={filterSpecies} gender={gender} filterGender={filterGender}
+                onChange={this.updateFilter} />
             </div>
             <div className="col-sm-9">
               <div className="row">
                 <div className="col-sm-12"><SearchAndSortHeader onChange={() => this.updateFilter} onClick={() => this.filterByName} sort={this.state.sort} />
                 </div>
-                <div className="col-sm-12"><Character items={filteredItems} filterSpecies={filterSpecies} /></div>
+                <div className="col-sm-12"><Character items={filteredItems} filterSpecies={filterSpecies} filterGender={filterGender}/></div>
               </div>
             </div>
           </div>

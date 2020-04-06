@@ -4,9 +4,10 @@ export class Character extends React.Component {
   render() {
     let items = this.props.items;
     let filterSpecies = this.props.filterSpecies;
+    let filterGender = this.props.filterGender;
     return (
       <div className="row" >
-        {items.map(item => ( filterSpecies.includes(item.species)?(
+        {items.map(item => ( filterSpecies.includes(item.species) && filterGender.includes(item.gender) ?(
           <div className="card text-white bg-dark col-6 col-md-3 p-sm-1" style={{ maxWidth: '18rem' }} key={item.name}>
             <img src={item.image} className="card-img-top" alt={item.name}></img>
             <div className="card-header text-uppercase">{item.name}
